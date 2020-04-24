@@ -11,6 +11,8 @@ import shutil
 
 
 # A script to set up the train and test datasets to work with flow_from_directory
+# Make sure you have a data/ file in the root directory, and the full dataset from kaggle 
+#  is inside this firectory and called "petfinder-adoption-prediction"
 def create_sets(data_path, is_train=True):
 
     # WHY ARE THERE COMMAS IN THE COMMA SEPARATED VALUE FILE FML
