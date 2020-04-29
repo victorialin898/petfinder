@@ -23,7 +23,7 @@ To build our model, we use TensorFlow's keras API. We also use Keras in our prep
 mkdir ~/.kaggle
 vim ~/.kaggle/kaggle.json 
 ```
-...In vim, copy paste contents of JSON, save and change permissions with `chmod 600 /home/<user>/.kaggle/kaggle.json`
+In vim, copy paste contents of JSON, save and change permissions with `chmod 600 /home/<user>/.kaggle/kaggle.json`
 
 3. Now that the kaggle API is downloaded and the token is set up, download the data and unzip it in the right place
 
