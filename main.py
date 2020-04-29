@@ -86,7 +86,7 @@ def main():
     """ Main function. """
     
     # create_sets(ARGS.data, is_train=True)
-
+    # exit()
     datasets = Datasets(ARGS.data)
 
     model = cnn()
