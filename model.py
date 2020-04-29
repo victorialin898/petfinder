@@ -1,7 +1,7 @@
 import tensorflow as tf
-from keras.models import Sequential, Model
-from keras.layers import Conv2D, MaxPool2D
-from keras.layers import Dense, Dropout, Activation, Flatten
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Conv2D, MaxPool2D
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
 import hyperparameters as hp
 
 def cnn():
