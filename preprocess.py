@@ -23,7 +23,15 @@ def create_sets(data_path, is_train=True):
         imgs_path = os.path.join(data_path, "petfinder-adoption-prediction/train_images/")
     else:
         # Test data does not have labels...
-        pass
+        return
+
+    try:
+        os.mkdir(dest_path)
+    except OSError as e:
+        print ("\tCreation of the directory %s failed: %s" % (dest_path, e.strerror))
+        return
+    else:
+        print ("\tSuccessfully created the directory %s " % dest_path)
 
     id_dict = {}
     print("Building pet ID to adoption speed dictionary.")
@@ -40,13 +48,6 @@ def create_sets(data_path, is_train=True):
                 id_dict[row[-3]] = row[-1]
                 line_count += 1
         print(f'Processed {line_count} lines.')
-
-    try:
-        os.mkdir(dest_path)
-    except OSError as e:
-        print ("\tCreation of the directory %s failed: %s" % (dest_path, e.strerror))
-    else:
-        print ("\tSuccessfully created the directory %s " % dest_path)
 
     print("Making and populating class folders. ")
     for i in range(hp.category_num):

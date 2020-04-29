@@ -15,7 +15,7 @@ To build our model, we use TensorFlow's keras API. We also use Keras in our prep
 
 ### Downloading the datasets
 1. Generate a new Kaggle API token: On Kaggle, log in then click top right user icon > My Account > scroll to API, generate new token, should download JSON file
-2. On your GCP instance, install kaggle, set up directories, copy over your JSON information
+2. On your GCP instance, install kaggle, set up directories, copy over your JSON information:
 
 ```pip install --user kaggle
 mkdir ~/.kaggle
@@ -23,7 +23,7 @@ vim ~/.kaggle/kaggle.json
 ```
 In vim, copy paste contents of JSON, save and change permissions with `chmod 600 /home/<user>/.kaggle/kaggle.json`
 
-3. Now that the kaggle API is downloaded and the token is set up, download the data and unzip it in the right place
+3. Now that the kaggle API is downloaded and the token is set up, download the data and unzip it in the right place:
 
 ```.local/bin/kaggle competitions download -c petfinder-adoption-prediction
 mkdir petfinder/data
