@@ -8,7 +8,6 @@ from PIL import Image
 import hyperparameters as hp
 import csv
 import shutil
-import random
 
 
 # A script to set up the train and test datasets to work with flow_from_directory
@@ -56,11 +55,12 @@ def create_sets(data_path, train_ratio):
             os.mkdir(path_train)
             os.mkdir(path_test)
         except OSError as e:
-            print ("\tCreation of the directories %s failed: %s" % (path_train, path_test, e.strerror))
+            print ("\tCreation of the directories %s, %s failed: %s" % (path_train, path_test, e.strerror))
         else:
-            print ("\tSuccessfully created the directory %s " % (path_train, path_test))
+            print ("\tSuccessfully created the directories %s, %s " % (path_train, path_test))
 
-    succ = 0
+    train_amt = 0
+    test_amt = 0
     fails = []
     for root, _, files in os.walk(imgs_path):
 
@@ -68,14 +68,15 @@ def create_sets(data_path, train_ratio):
             if name.endswith(".jpg"):
                 img_path = os.path.join(root, name)
                 if name.split("-")[0] in id_dict:
-                    if (random.uniform(0,1) < train_ratio):
+                    if (train_amt / hp.img_count < train_ratio):
                         shutil.copyfile(img_path, os.path.join(*[dest_path_train, str(id_dict[name.split("-")[0]]), name]))
+                        train_amt += 1
                     else:
                         shutil.copyfile(img_path, os.path.join(*[dest_path_test, str(id_dict[name.split("-")[0]]), name]))
-                    succ += 1
+                        test_amt += 1
                 else:
                     fails.append(name)
-    print("Successfully copied %d images, failed to copy %d" %(succ, len(fails)))
+    print("Successfully copied %d images to train, %d to test, %d total. Failed to copy %d" %(train_amt, test_amt, train_amt + test_amt, len(fails)))
 
 
 
@@ -103,10 +104,8 @@ class Datasets():
 
 
         # Setup data generators
-        self.train_data = self.get_data(
-            os.path.join(self.data_path, "train/"), True, True)
-        # self.test_data = self.get_data(
-        #     os.path.join(self.data_path, "test/"), False, False)
+        self.train_data = self.get_data(os.path.join(self.data_path, "train/"), True, True)
+        self.test_data = self.get_data(os.path.join(self.data_path, "test/"), False, False)
 
     def calc_mean_and_std(self):
         """ Calculate mean and standard deviation of a sample of the
@@ -158,22 +157,23 @@ class Datasets():
         print("Dataset std: [{0:.4f}, {1:.4f}, {2:.4f}]".format(
             self.std[0], self.std[1], self.std[2]))
 
-    def standardize(self, img):
-        """ Function for applying standardization to an input image.
+    # def standardize(self, img):
+    #     """ Function for applying standardization to an input image.
 
-        Arguments:
-            img - numpy array of shape (image size, image size, 3)
+    #     Arguments:
+    #         img - numpy array of shape (image size, image size, 3)
 
-        Returns:
-            img - numpy array of shape (image size, image size, 3)
-        """
-        return (img-self.mean)/self.std
+    #     Returns:
+    #         img - numpy array of shape (image size, image size, 3)
+    #     """
+    #     return (img-self.mean)/self.std
 
     def preprocess_fn(self, img):
         """ Preprocess function for ImageDataGenerator. """
 
         img = img / 255.
-        img = self.standardize(img)
+        img = (img-self.mean)/self.std
+        # img = self.standardize(img)
         return img
 
 

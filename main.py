@@ -86,7 +86,6 @@ def main():
     """ Main function. """
     
     create_sets(ARGS.data, train_ratio=0.9)
-    exit()
     datasets = Datasets(ARGS.data)
 
     model = cnn()
@@ -115,6 +114,8 @@ def main():
         epochs=hp.num_epochs,
         batch_size=None,
     )
+
+    test(model, datasets.test_data)
 
 # Make arguments global
 ARGS = parse_args()
