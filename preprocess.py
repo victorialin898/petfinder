@@ -100,8 +100,8 @@ class Datasets():
         # Setup data generators
         self.train_data = self.get_data(
             os.path.join(self.data_path, "train/"), True, True)
-        self.test_data = self.get_data(
-            os.path.join(self.data_path, "test/"), False, False)
+        # self.test_data = self.get_data(
+        #     os.path.join(self.data_path, "test/"), False, False)
 
     def calc_mean_and_std(self):
         """ Calculate mean and standard deviation of a sample of the
@@ -223,7 +223,7 @@ class Datasets():
             class_mode='sparse',
             batch_size=hp.batch_size,
             shuffle=shuffle,
-            classes=classes_for_flow)
+            classes=None)
 
         # Setup the dictionaries if not already done
         if not bool(self.idx_to_class):

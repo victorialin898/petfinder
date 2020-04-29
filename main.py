@@ -1,7 +1,7 @@
 import os
 import argparse
 import tensorflow as tf
-# from model import Model
+from model import cnn
 import hyperparameters as hp
 from preprocess import Datasets, create_sets
 # from tensorboard_utils import ImageLabelingLogger, ConfusionMatrixLogger
@@ -84,16 +84,13 @@ def test(model, test_data):
 
 def main():
     """ Main function. """
-    print("hi")
-
-    create_sets(ARGS.data, is_train=True)
+    
+    # create_sets(ARGS.data, is_train=True)
 
     datasets = Datasets(ARGS.data)
 
-    # model = YourModel()
-    # model(tf.keras.Input(shape=(hp.img_size, hp.img_size, 3)))
-    # checkpoint_path = "./your_model_checkpoints/"
-    # model.summary()
+    model = cnn()
+    checkpoint_path = "./your_model_checkpoints/"
 
 
     # if ARGS.load_checkpoint is not None:
@@ -102,16 +99,22 @@ def main():
     # if not os.path.exists(checkpoint_path):
     #     os.makedirs(checkpoint_path)
 
-    # # Compile model graph
-    # model.compile(
-    #     optimizer=model.optimizer,
-    #     loss=model.loss_fn,
-    #     metrics=["sparse_categorical_accuracy"])
+    # Compile model graph
+    model.compile(
+        optimizer='sgd',
+        loss='sparse_categorical_crossentropy',
+        metrics=["sparse_categorical_accuracy"])
 
     # if ARGS.evaluate:
     #     test(model, datasets.test_data)
     # else:
     #     train(model, datasets, checkpoint_path)
+
+    model.fit(
+        x=datasets.train_data,
+        epochs=hp.num_epochs,
+        batch_size=None,
+    )
 
 # Make arguments global
 ARGS = parse_args()
