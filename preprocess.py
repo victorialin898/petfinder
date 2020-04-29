@@ -8,30 +8,29 @@ from PIL import Image
 import hyperparameters as hp
 import csv
 import shutil
+import random
 
 
 # A script to set up the train and test datasets to work with flow_from_directory
 # Make sure you have a data/ file in the root directory, and the full dataset from kaggle 
 #  is inside this firectory and called "petfinder-adoption-prediction"
-def create_sets(data_path, is_train=True):
+def create_sets(data_path, train_ratio):
 
     # WHY ARE THERE COMMAS IN THE COMMA SEPARATED VALUE FILE FML
 
-    if is_train:
-        info_path = "petfinder-adoption-prediction/train/train.csv"
-        dest_path = os.path.join(data_path, "train")
-        imgs_path = os.path.join(data_path, "petfinder-adoption-prediction/train_images/")
-    else:
-        # Test data does not have labels...
-        return
+    info_path = "petfinder-adoption-prediction/train/train.csv"
+    dest_path_train = os.path.join(data_path, "train")
+    dest_path_test = os.path.join(data_path, "test")
+    imgs_path = os.path.join(data_path, "petfinder-adoption-prediction/train_images/")
 
     try:
-        os.mkdir(dest_path)
+        os.mkdir(dest_path_train)
+        os.mkdir(dest_path_test)
     except OSError as e:
-        print ("\tCreation of the directory %s failed: %s" % (dest_path, e.strerror))
+        print ("\tCreation of the directories %s, %s failed: %s" % (dest_path_train, dest_path_test, e.strerror))
         return
     else:
-        print ("\tSuccessfully created the directory %s " % dest_path)
+        print ("\tSuccessfully created the directories %s, %s " % (dest_path_train, dest_path_test,))
 
     id_dict = {}
     print("Building pet ID to adoption speed dictionary.")
@@ -51,13 +50,15 @@ def create_sets(data_path, is_train=True):
 
     print("Making and populating class folders. ")
     for i in range(hp.category_num):
-        path = os.path.join(dest_path, str(i))
+        path_train = os.path.join(dest_path_train, str(i))
+        path_test = os.path.join(dest_path_test, str(i))
         try:
-            os.mkdir(path)
+            os.mkdir(path_train)
+            os.mkdir(path_test)
         except OSError as e:
-            print ("\tCreation of the directory %s failed: %s" % (path, e.strerror))
+            print ("\tCreation of the directories %s failed: %s" % (path_train, path_test, e.strerror))
         else:
-            print ("\tSuccessfully created the directory %s " % path)
+            print ("\tSuccessfully created the directory %s " % (path_train, path_test))
 
     succ = 0
     fails = []
@@ -67,7 +68,10 @@ def create_sets(data_path, is_train=True):
             if name.endswith(".jpg"):
                 img_path = os.path.join(root, name)
                 if name.split("-")[0] in id_dict:
-                    shutil.copyfile(img_path, os.path.join(*[dest_path, str(id_dict[name.split("-")[0]]), name]))
+                    if (random.uniform(0,1) < train_ratio):
+                        shutil.copyfile(img_path, os.path.join(*[dest_path_train, str(id_dict[name.split("-")[0]]), name]))
+                    else:
+                        shutil.copyfile(img_path, os.path.join(*[dest_path_test, str(id_dict[name.split("-")[0]]), name]))
                     succ += 1
                 else:
                     fails.append(name)

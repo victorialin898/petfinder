@@ -85,8 +85,8 @@ def test(model, test_data):
 def main():
     """ Main function. """
     
-    # create_sets(ARGS.data, is_train=True)
-
+    create_sets(ARGS.data, train_ratio=0.9)
+    exit()
     datasets = Datasets(ARGS.data)
 
     model = cnn()
