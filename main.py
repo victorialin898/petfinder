@@ -4,7 +4,7 @@ import tensorflow as tf
 from model import cnn
 import hyperparameters as hp
 from preprocess import Datasets, create_sets
-# from tensorboard_utils import ImageLabelingLogger, ConfusionMatrixLogger
+from data_vis import ImageLabelingLogger, ConfusionMatrixLogger
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -85,18 +85,18 @@ def test(model, test_data):
 def main():
     """ Main function. """
     
-    create_sets(ARGS.data, train_ratio=0.9)
+    # create_sets(ARGS.data, train_ratio=0.9)
+
     datasets = Datasets(ARGS.data)
 
     model = cnn()
     checkpoint_path = "./your_model_checkpoints/"
 
+    if ARGS.load_checkpoint is not None:
+        model.load_weights(ARGS.load_checkpoint)
 
-    # if ARGS.load_checkpoint is not None:
-    #     model.load_weights(ARGS.load_checkpoint)
-
-    # if not os.path.exists(checkpoint_path):
-    #     os.makedirs(checkpoint_path)
+    if not os.path.exists(checkpoint_path):
+        os.makedirs(checkpoint_path)
 
     # Compile model graph
     model.compile(
@@ -104,18 +104,18 @@ def main():
         loss='sparse_categorical_crossentropy',
         metrics=["sparse_categorical_accuracy"])
 
-    # if ARGS.evaluate:
-    #     test(model, datasets.test_data)
-    # else:
-    #     train(model, datasets, checkpoint_path)
+    if ARGS.evaluate:
+        test(model, datasets.test_data)
+    else:
+        train(model, datasets, checkpoint_path)
 
-    model.fit(
-        x=datasets.train_data,
-        epochs=hp.num_epochs,
-        batch_size=None,
-    )
+    # model.fit(
+    #     x=datasets.train_data,
+    #     epochs=hp.num_epochs,
+    #     batch_size=None,
+    # )
 
-    test(model, datasets.test_data)
+    # test(model, datasets.test_data)
 
 # Make arguments global
 ARGS = parse_args()
