@@ -22,14 +22,14 @@ def create_sets(data_path, train_ratio):
     dest_path_test = os.path.join(data_path, "test")
     imgs_path = os.path.join(data_path, "petfinder-adoption-prediction/train_images/")
 
-    # try:
-    #     os.mkdir(dest_path_train)
-    #     os.mkdir(dest_path_test)
-    # except OSError as e:
-    #     print ("\tCreation of the directories %s, %s failed: %s" % (dest_path_train, dest_path_test, e.strerror))
-    #     return
-    # else:
-    #     print ("\tSuccessfully created the directories %s, %s " % (dest_path_train, dest_path_test,))
+    try:
+        os.mkdir(dest_path_train)
+        os.mkdir(dest_path_test)
+    except OSError as e:
+        print ("\tCreation of the directories %s, %s failed: %s" % (dest_path_train, dest_path_test, e.strerror))
+        return
+    else:
+        print ("\tSuccessfully created the directories %s, %s " % (dest_path_train, dest_path_test,))
 
     id_dict = {}
     print("Building pet ID to adoption speed dictionary.")
@@ -47,8 +47,6 @@ def create_sets(data_path, train_ratio):
                 line_count += 1
         print(f'Processed {line_count} lines.')
 
-    print(id_dict['0a9f9f178'])
-    exit()
 
     print("Making and populating class folders. ")
     for i in range(hp.category_num):

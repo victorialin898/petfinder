@@ -102,7 +102,7 @@ def main():
     model.compile(
         optimizer='sgd',
         loss='sparse_categorical_crossentropy',
-        metrics=["sparse_categorical_accuracy", tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
+        metrics=["sparse_categorical_accuracy"])
 
     if ARGS.evaluate:
         test(model, datasets.test_data)
