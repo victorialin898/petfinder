@@ -8,6 +8,7 @@ from data_vis import ImageLabelingLogger, ConfusionMatrixLogger, ConfusionMatrix
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+# Added this from the project 4 code to give us parsing functionality
 def parse_args():
     """ Perform command-line argument parsing. """
 
@@ -42,9 +43,9 @@ def parse_args():
     return parser.parse_args()
 
 def train(model, datasets, checkpoint_path):
-    """ Training routine. """
-
-    # Keras callbacks for training
+    """
+    Trains our model, handles checkpoints as well
+    """
     callback_list = [
         tf.keras.callbacks.ModelCheckpoint(
             filepath=checkpoint_path + \
@@ -59,11 +60,10 @@ def train(model, datasets, checkpoint_path):
         ImageLabelingLogger(datasets)
     ]
 
-    # Include confusion logger in callbacks if flag set
     if ARGS.confusion:
         callback_list.append(ConfusionMatrixLogger(datasets))
 
-    # Begin training
+    # Fit model to test data
     model.fit(
         x=datasets.train_data,
         validation_data=datasets.test_data,
@@ -73,9 +73,6 @@ def train(model, datasets, checkpoint_path):
     )
 
 def test(model, datasets):
-    """ Testing routine. """
-
-    # Run model on test set
     model.evaluate(
         x=datasets.test_data,
         verbose=1,
@@ -85,10 +82,10 @@ def test(model, datasets):
 
 
 def main():
-    """ Main function. """
-    
-    #create_sets(ARGS.data, train_ratio=0.9)
+    # Sets up the train and test directories according to flow_from_directory. Aborts if they are already present
+    create_sets(ARGS.data, train_ratio=0.9)
 
+    # Our datasets here
     datasets = Datasets(ARGS.data)
 
     model = cnn()
@@ -111,15 +108,7 @@ def main():
     else:
         train(model, datasets, checkpoint_path)
 
-    # model.fit(
-    #     x=datasets.train_data,
-    #     epochs=hp.num_epochs,
-    #     batch_size=None,
-    # )
 
-    # test(model, datasets.test_data)
-
-# Make arguments global
 ARGS = parse_args()
 
 main()
