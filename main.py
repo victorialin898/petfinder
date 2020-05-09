@@ -4,7 +4,7 @@ import tensorflow as tf
 from model import cnn
 import hyperparameters as hp
 from preprocess import Datasets, create_sets
-from data_vis import ImageLabelingLogger, ConfusionMatrixLogger
+from data_vis import ImageLabelingLogger, ConfusionMatrixLogger, ConfusionMatrixLogger_nocallback
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -72,14 +72,16 @@ def train(model, datasets, checkpoint_path):
         callbacks=callback_list,
     )
 
-def test(model, test_data):
+def test(model, datasets):
     """ Testing routine. """
 
     # Run model on test set
     model.evaluate(
-        x=test_data,
+        x=datasets.test_data,
         verbose=1,
     )
+
+    ConfusionMatrixLogger_nocallback(model, datasets)
 
 
 def main():
@@ -105,7 +107,7 @@ def main():
         metrics=["sparse_categorical_accuracy"])
 
     if ARGS.evaluate:
-        test(model, datasets.test_data)
+        test(model, datasets)
     else:
         train(model, datasets, checkpoint_path)
 
