@@ -85,7 +85,7 @@ def test(model, test_data):
 def main():
     """ Main function. """
     
-    create_sets(ARGS.data, train_ratio=0.9)
+    #create_sets(ARGS.data, train_ratio=0.9)
 
     datasets = Datasets(ARGS.data)
 
