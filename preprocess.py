@@ -47,6 +47,7 @@ def create_sets(data_path, train_ratio):
                 line_count += 1
         print(f'Processed {line_count} lines.')
 
+
     print("Making and populating class folders. ")
     for i in range(hp.category_num):
         path_train = os.path.join(dest_path_train, str(i))
