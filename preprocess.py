@@ -81,56 +81,47 @@ def create_sets(data_path, train_ratio):
 
 
 
-# Preprocess code
+# Datasets object that holds the test/train data and information
 class Datasets():
-    """ Class for containing the training and test sets as well as
-    other useful data-related information. Contains the functions
-    for preprocessing.
+    """ Class that holds train/data sets and information, structured 
+    much like the Datasets() class in project 4
     """
 
     def __init__(self, data_path):
         self.data_path = data_path
 
-        # Dictionaries for (label index) <--> (class name)
         self.idx_to_class = {}
         self.class_to_idx = {}
-
-        # For storing list of classes
         self.classes = [""] * hp.category_num
 
-        # Mean and std for standardization
+        # For standardization
         self.mean = np.zeros((3,))
         self.std = np.ones((3,))
         self.calc_mean_and_std()
 
-
-        # Setup data generators
+        # Data generators
         self.train_data = self.get_data(os.path.join(self.data_path, "train/"), True, True)
         self.test_data = self.get_data(os.path.join(self.data_path, "test/"), False, False)
 
     def calc_mean_and_std(self):
-        """ Calculate mean and standard deviation of a sample of the
-        training dataset for standardization.
-
+        """ Takes sample of dataset and calculates a sample. I used a lot
+        of my project 4 code since it was very relevant here!
+        
         Arguments: none
-
         Returns: none
         """
 
-        # Get list of all images in training directory
+        # Walk through unzipped Petfinder Data folder, retrieve and shufflefile names
         file_list = []
         for root, _, files in os.walk(os.path.join(self.data_path, "train/")):
             for name in files:
                 if name.endswith(".jpg"):
                     file_list.append(os.path.join(root, name))
-
-        # Shuffle filepaths
         random.shuffle(file_list)
 
-        # Take sample of file paths
+        # Retrieve sample based on prespecified hyperparameter
         file_list = file_list[:hp.preprocess_sample_size]
 
-        # Allocate space in memory for images
         data_sample = np.zeros(
             (hp.preprocess_sample_size, hp.img_size, hp.img_size, 3))
 
@@ -141,7 +132,6 @@ class Datasets():
             img = np.array(img, dtype=np.float32)
             img /= 255.
 
-            # Grayscale -> RGB
             if len(img.shape) == 2:
                 img = np.stack([img, img, img], axis=-1)
 
@@ -150,31 +140,19 @@ class Datasets():
         self.mean = np.mean(data_sample, axis=(0,1,2))
         self.std = np.std(data_sample, axis=(0,1,2))
 
-        # ==========================================================
-
         print("Dataset mean: [{0:.4f}, {1:.4f}, {2:.4f}]".format(
             self.mean[0], self.mean[1], self.mean[2]))
 
         print("Dataset std: [{0:.4f}, {1:.4f}, {2:.4f}]".format(
             self.std[0], self.std[1], self.std[2]))
 
-    # def standardize(self, img):
-    #     """ Function for applying standardization to an input image.
-
-    #     Arguments:
-    #         img - numpy array of shape (image size, image size, 3)
-
-    #     Returns:
-    #         img - numpy array of shape (image size, image size, 3)
-    #     """
-    #     return (img-self.mean)/self.std
 
     def preprocess_fn(self, img):
-        """ Preprocess function for ImageDataGenerator. """
+        """ Preprocess function for ImageDataGenerator- an interesting addition 
+        if we have time could be to implement different preprocessing methods """
 
         img = img / 255.
         img = (img-self.mean)/self.std
-        # img = self.standardize(img)
         return img
 
 
@@ -197,10 +175,6 @@ class Datasets():
         """
 
         if augment:
-            # Documentation for ImageDataGenerator: https://bit.ly/2wN2EmK
-            #
-            # ============================================================
-
             data_gen = tf.keras.preprocessing.image.ImageDataGenerator(
                 rotation_range=10,
                 width_shift_range=0.3,
@@ -208,17 +182,14 @@ class Datasets():
                 horizontal_flip=True,
                 preprocessing_function=self.preprocess_fn)
 
-            # ============================================================
         else:
-            # Don't modify this
             data_gen = tf.keras.preprocessing.image.ImageDataGenerator(
                 preprocessing_function=self.preprocess_fn)
 
         img_size = hp.img_size
-
         classes_for_flow = None
 
-        # Make sure all data generators are aligned in label indices
+        # Align data generators by label
         if bool(self.idx_to_class):
             classes_for_flow = self.classes
 

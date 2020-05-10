@@ -1,6 +1,7 @@
 .DS_STORE
 
 data/*
+your_model_checkpoints/*
 
 __pycache__/*
 

@@ -6,6 +6,9 @@ import tensorflow as tf
 from matplotlib import pyplot as plt
 import hyperparameters as hp
 
+
+# We migrated this over from Project 4 since it was so relevant for producing visualizations for our results.
+# We didn't see the point in reimplementing it all from scratch...
 def plot_to_image(figure):
     """ Converts a pyplot figure to an image tensor. """
 
