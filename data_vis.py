@@ -143,6 +143,7 @@ class ConfusionMatrixLogger_nocallback():
 
         self.datasets = datasets
         self.model = model
+        self.log_confusion_matrix()
 
     def log_confusion_matrix(self):
         """ Writes a confusion matrix plot to disk. """
