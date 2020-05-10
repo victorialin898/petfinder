@@ -28,12 +28,6 @@ def parse_args():
         the case of task 2, passing a checkpoint path will disable
         the loading of VGG weights.''')
     parser.add_argument(
-        '--confusion',
-        action='store_true',
-        help='''Log a confusion matrix at the end of each
-        epoch (viewable in Tensorboard). This is turned off
-        by default as it takes a little bit of time to complete.''')
-    parser.add_argument(
         '--evaluate',
         action='store_true',
         help='''Skips training and evaluates on the test set once.
@@ -59,10 +53,7 @@ def train(model, datasets, checkpoint_path):
             profile_batch=0),
         ImageLabelingLogger(datasets)
     ]
-
-    if ARGS.confusion:
-        callback_list.append(ConfusionMatrixLogger(datasets))
-
+    
     # Fit model to test data
     model.fit(
         x=datasets.train_data,

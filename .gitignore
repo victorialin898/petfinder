@@ -2,6 +2,7 @@
 
 data/*
 your_model_checkpoints/*
+logs/*
 
 __pycache__/*
 
